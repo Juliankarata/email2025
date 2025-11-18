@@ -4,14 +4,11 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-/**
- * Gestor principal: maneja contactos, bandejas, envíos, borradores y filtros.
- * No implementa transporte real de correo — es un simulador para el TP.
- */
+
 public class GestorEmails {
     private final Map<BandejaType, Bandeja> bandejas;
     private final Set<Contacto> contactos;
-    private final Map<String, Email> emailIndex; // por id, para operaciones rápidas
+    private final Map<String, Email> emailIndex;
 
     public GestorEmails() {
         bandejas = new EnumMap<>(BandejaType.class);
@@ -22,10 +19,9 @@ public class GestorEmails {
         emailIndex = new HashMap<>();
     }
 
-    // ----------------- Contactos -----------------
     public Contacto crearContacto(String nombre, String email) {
         Contacto c = new Contacto(nombre, email);
-        contactos.remove(c); // evitar duplicados por email
+        contactos.remove(c);
         contactos.add(c);
         return c;
     }
@@ -44,8 +40,6 @@ public class GestorEmails {
         return Collections.unmodifiableSet(contactos);
     }
 
-    // ----------------- Gestión de contactos: edición -----------------
-
     public boolean editarContacto(String emailOriginal, String nuevoNombre, String nuevoEmail) {
         return buscarContactoPorEmail(emailOriginal)
                 .map(c -> editarContactoInterno(c, nuevoNombre, nuevoEmail))
@@ -60,7 +54,6 @@ public class GestorEmails {
         return true;
     }
 
-    // ----------------- Email lifecycle -----------------
     public Email crearEmail(Contacto remitente, String asunto, String contenido, List<Contacto> para) {
         Email e = new Email();
         e.setRemitente(remitente);

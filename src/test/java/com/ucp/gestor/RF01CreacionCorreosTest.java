@@ -52,4 +52,7 @@ public class RF01CreacionCorreosTest {
         assertFalse(e.isFavorito());
         assertNotNull(e.toString());
     }
+
 }
+
+

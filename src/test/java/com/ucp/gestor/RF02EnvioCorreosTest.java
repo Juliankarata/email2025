@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,4 +41,40 @@ public class RF02EnvioCorreosTest {
         assertNotNull(e.getFecha());
         assertFalse(e.isLeido());
     }
+
+@Test
+void correoEnviado_apareceEnEnviadosYEnEntrada() {
+    GestorEmails gestor = new GestorEmails();
+    Contacto remitente = gestor.crearContacto("Profe", "profe@demo.com");
+    Contacto alumno1 = gestor.crearContacto("Alumno 1", "alumno1@demo.com");
+    Contacto alumno2 = gestor.crearContacto("Alumno 2", "alumno2@demo.com");
+
+    Email correo = gestor.crearEmail(
+            remitente,
+            "Entrega TP",
+            "Recordatorio para entregar el TP",
+            Arrays.asList(alumno1, alumno2)
+    );
+
+    assertTrue(correo.isBorrador());
+    assertTrue(gestor.getTodosEnBandeja(BandejaType.BORRADORES).contains(correo));
+
+    gestor.enviar(correo);
+
+    assertFalse(correo.isBorrador());
+
+
+    List<Email> enviados = gestor.getTodosEnBandeja(BandejaType.ENVIADOS);
+    assertTrue(enviados.contains(correo));
+
+    List<Email> entrada = gestor.getTodosEnBandeja(BandejaType.ENTRADA);
+    assertTrue(entrada.contains(correo));
+
+    assertEquals(remitente, correo.getRemitente());
+    assertEquals(2, correo.getPara().size());
+    assertTrue(correo.getPara().contains(alumno1));
+    assertTrue(correo.getPara().contains(alumno2));
+    assertFalse(correo.isLeido());
+}
+
 }
