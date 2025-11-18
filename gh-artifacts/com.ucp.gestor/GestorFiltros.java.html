@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GestorFiltros.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Gestor de Emails con Filtros - UCP</a> &gt; <a href="index.source.html" class="el_package">com.ucp.gestor</a> &gt; <span class="el_source">GestorFiltros.java</span></div><h1>GestorFiltros.java</h1><pre class="source lang-java linenums">package com.ucp.gestor;
+
+import java.util.*;
+
+/**
+ * Gestor de filtros personalizados.
+ * - Permite registrar hasta 5 filtros.
+ * - Evita nombres duplicados.
+ * - Permite listar y buscar filtros por nombre.
+ *
+ * IMPORTANTE: implementado sin usar if, switch ni while.
+ */
+public class GestorFiltros {
+
+    private static final int MAX_FILTROS = 5;
+
+    // Usamos un Map para acceder rápido por nombre y mantener orden de inserción
+    private final Map&lt;String, Filtro&gt; filtros;
+
+<span class="fc" id="L20">    public GestorFiltros() {</span>
+<span class="fc" id="L21">        this.filtros = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc" id="L22">    }</span>
+
+    /**
+     * Intenta registrar un filtro nuevo.
+     * @param filtro Filtro a agregar
+     * @return true si se agregó, false si ya había 5 filtros o el nombre ya existía
+     */
+    public boolean agregarFiltro(Filtro filtro) {
+<span class="fc" id="L30">        Objects.requireNonNull(filtro, &quot;El filtro no puede ser null&quot;);</span>
+
+<span class="fc" id="L32">        String nombre = filtro.getNombre();</span>
+
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        boolean hayEspacio = filtros.size() &lt; MAX_FILTROS;</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        boolean nombreLibre = !filtros.containsKey(nombre);</span>
+<span class="pc bpc" id="L36" title="1 of 4 branches missed.">        boolean puedeAgregar = hayEspacio &amp;&amp; nombreLibre;</span>
+
+        // Usamos el cortocircuito de &amp;&amp; para evitar if:
+        // solo se llama a agregarInterno si puedeAgregar es true
+<span class="pc bpc" id="L40" title="1 of 4 branches missed.">        return puedeAgregar &amp;&amp; agregarInterno(filtro);</span>
+    }
+
+    // Método auxiliar para encapsular el side-effect de agregar al mapa
+    private boolean agregarInterno(Filtro filtro) {
+<span class="fc" id="L45">        filtros.put(filtro.getNombre(), filtro);</span>
+<span class="fc" id="L46">        return true;</span>
+    }
+
+    /**
+     * Elimina un filtro por nombre.
+     * @param nombre nombre del filtro a eliminar
+     * @return true si existía y se eliminó, false en caso contrario
+     */
+    public boolean eliminarFiltro(String nombre) {
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        return filtros.remove(nombre) != null;</span>
+    }
+
+    /**
+     * Busca un filtro por nombre.
+     */
+    public Optional&lt;Filtro&gt; buscarPorNombre(String nombre) {
+<span class="fc" id="L62">        return Optional.ofNullable(filtros.get(nombre));</span>
+    }
+
+    /**
+     * Lista todos los filtros registrados (vista de solo lectura).
+     */
+    public List&lt;Filtro&gt; listarFiltros() {
+<span class="fc" id="L69">        return List.copyOf(filtros.values());</span>
+    }
+
+    /**
+     * Devuelve cuántos filtros hay actualmente registrados.
+     */
+    public int cantidadFiltros() {
+<span class="fc" id="L76">        return filtros.size();</span>
+    }
+
+    /**
+     * Devuelve el máximo permitido de filtros.
+     */
+    public int maximoFiltros() {
+<span class="fc" id="L83">        return MAX_FILTROS;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
