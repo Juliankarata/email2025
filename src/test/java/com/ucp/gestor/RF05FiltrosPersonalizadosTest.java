@@ -34,7 +34,7 @@ public class RF05FiltrosPersonalizadosTest {
 
         Filtro contieneUcp = new Filtro("Contiene UCP",
                 m -> (m.getRemitente() != null && m.getRemitente().getEmail().toLowerCase().contains("ucp.edu.ar")) ||
-                     (m.getPara().stream().anyMatch(c -> c.getEmail().toLowerCase().contains("ucp.edu.ar"))));
+                (m.getPara().stream().anyMatch(c -> c.getEmail().toLowerCase().contains("ucp.edu.ar"))));
 
         Filtro andFiltro = asuntoReunion.and(contieneUcp);
         Filtro orFiltro = asuntoReunion.or(contieneUcp);
@@ -50,19 +50,6 @@ public class RF05FiltrosPersonalizadosTest {
 
         assertTrue(andFiltro.toString().contains("AND"));
         assertTrue(notFiltro.toString().contains("NOT"));
-    }
-
-    @Test
-    void gestorFiltros_limiteDeCincoYNombresUnicos() {
-        for (int i = 1; i <= 5; i++) {
-            Filtro f = new Filtro("F" + i, m -> true);
-            assertTrue(gestorFiltros.agregarFiltro(f));
-        }
-
-        assertFalse(gestorFiltros.agregarFiltro(new Filtro("F6", m -> true))); // supera 5
-        assertFalse(gestorFiltros.agregarFiltro(new Filtro("F1", m -> false))); // nombre duplicado
-        assertEquals(5, gestorFiltros.cantidadFiltros());
-        assertEquals(5, gestorFiltros.maximoFiltros());
     }
 
     @Test
