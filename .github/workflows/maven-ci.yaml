@@ -24,6 +24,16 @@ jobs:
       - name: 🔨 Compilar y ejecutar tests
         run: mvn -B clean verify
 
+      - name: 📊 Generar reporte de cobertura
+        run: mvn jacoco:report
+
+      - name: 📝 Publicar reporte de cobertura
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: target/site/jacoco/
+
       - name: 🎯 Verificar resultado
         if: always()
         run: |
