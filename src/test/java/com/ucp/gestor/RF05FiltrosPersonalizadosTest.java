@@ -74,4 +74,30 @@ public class RF05FiltrosPersonalizadosTest {
         assertTrue(gestorFiltros.eliminarFiltro("Temporal"));
         assertFalse(gestorFiltros.buscarPorNombre("Temporal").isPresent());
     }
+
+
+        @Test
+    void gettersDeFiltroYComposicionEncadenada() {
+        Filtro siempreTrue = new Filtro("SiempreTrue", m -> true);
+        Filtro siempreFalse = new Filtro("SiempreFalse", m -> false);
+
+        // getters
+        assertEquals("SiempreTrue", siempreTrue.getNombre());
+        assertTrue(siempreTrue.getPredicado().test(new Email()));
+        assertFalse(siempreFalse.getPredicado().test(new Email()));
+
+        // composición encadenada: ((true AND false) OR true) NEGATE
+        Filtro compuesto = siempreTrue.and(siempreFalse).or(siempreTrue).negate();
+
+        Email e = new Email();
+        boolean resultado = compuesto.getPredicado().test(e);
+
+        // (true AND false) = false → false OR true = true → negate = false
+        assertFalse(resultado);
+
+        // toString de compuesto usa el nombre generado por and/or/negate
+        String texto = compuesto.toString();
+        assertTrue(texto.contains("AND") || texto.contains("OR") || texto.contains("NOT"));
+    }
+
 }

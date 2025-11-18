@@ -51,4 +51,37 @@ public class RF03GestionContactosTest {
         assertEquals(c1.hashCode(), c2.hashCode());
         assertTrue(c1.toString().contains("demo@correo.com") || c1.toString().contains("Demo@Correo.com"));
     }
+
+    @Test
+    void equalsDeContacto_conEmailsNullNoSonIguales() {
+        Contacto cNull1 = new Contacto("X", null);
+        Contacto cNull2 = new Contacto("Y", null);
+
+        // mismo objeto
+        assertTrue(cNull1.equals(cNull1));
+
+        // distintos objetos, ambos con email null → equals debe dar false con nuestra implementación
+        assertFalse(cNull1.equals(cNull2));
+
+        // comparar con otro tipo y con null
+        assertFalse(cNull1.equals("cadena"));
+        assertFalse(cNull1.equals(null));
+
+        // hashCode con null ya lo ejercita
+        assertDoesNotThrow(cNull1::hashCode);
+    }
+
+    @Test
+    void equalsDeContacto_conUnoNullYOtroNo_devuelveFalse() {
+        Contacto conMail = new Contacto("Con", "mail@demo.com");
+        Contacto sinMail = new Contacto("Sin", null);
+
+        assertFalse(conMail.equals(sinMail));
+        assertFalse(sinMail.equals(conMail));
+
+        // self-equals con mail no nulo
+        assertTrue(conMail.equals(conMail));
+    }
+
+
 }

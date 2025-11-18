@@ -29,11 +29,13 @@ public class Contacto {
 
     @Override
     public boolean equals(Object o) {
-        // Sin if: usamos instanceof + lógica booleana
-        return (o instanceof Contacto)
-                && email != null
-                && ((Contacto) o).email != null
-                && email.equalsIgnoreCase(((Contacto) o).email);
+        // 1) si es el mismo objeto, siempre true
+        // 2) si no, comparamos por email ignorando mayúsculas, siempre que ambos emails no sean null
+        return this == o ||
+                (o instanceof Contacto
+                        && email != null
+                        && ((Contacto) o).email != null
+                        && email.equalsIgnoreCase(((Contacto) o).email));
     }
 
     @Override
